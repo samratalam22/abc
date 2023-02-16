@@ -11,6 +11,7 @@
 # Outlook Mail Inbox:
 <img width="257" alt="image" src="https://user-images.githubusercontent.com/38380356/219322354-fd47483b-e44a-46ba-8630-7c0f3fd69df7.png">
 # Data:
+'''
 {
     "responseMsg": "Success",
     "responseCode": 200,
@@ -53,4 +54,4 @@
         }
     ]
 }
-
+'''
