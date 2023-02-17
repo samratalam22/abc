@@ -2,14 +2,17 @@
 
 # Send Mail:
 <img width="647" alt="image" src="https://user-images.githubusercontent.com/38380356/219321956-eb7acdee-0e90-4a77-b491-5d5471f5d4df.png">
+
 # Result:
 <img width="706" alt="image" src="https://user-images.githubusercontent.com/38380356/219322101-6a22783e-1ea3-4888-9854-7ce073ee0c89.png">
 
 
 # Read Mail:
 <img width="662" alt="image" src="https://user-images.githubusercontent.com/38380356/219322188-3ab33534-a7e6-42c9-b4e5-7edb56d8fa74.png">
+
 # Outlook Mail Inbox:
 <img width="257" alt="image" src="https://user-images.githubusercontent.com/38380356/219322354-fd47483b-e44a-46ba-8630-7c0f3fd69df7.png">
+
 # Data:
 
 ```json
