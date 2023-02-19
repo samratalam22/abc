@@ -61,9 +61,6 @@ public class OutlookMailController {
             commonResponse.setResponseMsg("Success");
             commonResponse.setResponseCode(200);
 
-            System.out.println("hola");
-            System.out.println(emailService.readMail().size());
-            System.out.println(commonResponse.toString());
 
         } catch (
                 Exception e) {

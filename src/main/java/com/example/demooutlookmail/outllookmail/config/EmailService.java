@@ -4,6 +4,7 @@ import com.example.demooutlookmail.outllookmail.Model.MailModel;
 import jakarta.activation.DataHandler;
 import jakarta.mail.*;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -68,17 +69,17 @@ public class EmailService {
             for (int i = 0; i < messages.length; i++) {
                 Message message = messages[i];
                 MailModel mailModel = new MailModel();
-                mailModel.setFrom(Arrays.toString(message.getFrom()));
+                mailModel.setTo("samrat.reddot@outlook.com");
+                mailModel.setFrom(message.getFrom()[0].toString());
                 mailModel.setSubject(message.getSubject());
-                Multipart multipart = (Multipart) message.getContent();
 
-                mailModel.setMailBody(mailBodyRead(multipart)); //todo: here to parse mail body with format
+                mailModel.setMailBody(getTextFromMail(message)); //todo: here to parse mail body with format
 
                 listOfMail.add(mailModel);
             }
 
 
-            System.out.println(listOfMail);
+            //System.out.println(listOfMail);
 
             emailFolder.close(true);
             store.close();
@@ -97,26 +98,47 @@ public class EmailService {
 
     }
 
-    public List<String> mailBodyRead(Multipart multipart) throws MessagingException, IOException {
-        List<String> result = new ArrayList<>();
-        for (int x = 0; x < multipart.getCount(); x++) {
-            BodyPart bodyPart = multipart.getBodyPart(x);
 
-            String disposition = bodyPart.getDisposition();
 
-            if (disposition != null && (disposition.equals(BodyPart.ATTACHMENT))) {
-                System.out.println("Mail have some attachment : ");
-
-                DataHandler handler = bodyPart.getDataHandler();
-                System.out.println("file name : " + handler.getName());
-            } else {
-                System.out.println(bodyPart.getContent());
-                result.add((String) bodyPart.getContent());
-            }
+    private String getTextFromMail(Message message) throws MessagingException, IOException {
+        if (message.isMimeType("text/plain")) {
+            return message.getContent().toString();
         }
+        if (message.isMimeType("multipart/*")) {
+            MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
+            return getTextFromMimeMultipart(mimeMultipart);
+        }
+        return "";
+    }
 
+    private String getTextFromMimeMultipart(
+            MimeMultipart mimeMultipart)  throws MessagingException, IOException{
+        String result = "";
+        for (int i = 0; i < mimeMultipart.getCount(); i++) {
+            BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+            if (bodyPart.isMimeType("text/plain")) {
+                return result + "\n" + bodyPart.getContent(); // without return, same text appears twice in my tests
+            }
+            result += this.parseBodyPart(bodyPart);
+        }
         return result;
     }
+
+    private String parseBodyPart(BodyPart bodyPart) throws MessagingException, IOException {
+        if (bodyPart.isMimeType("text/html")) {
+            return "\n" + org.jsoup.Jsoup
+                    .parse(bodyPart.getContent().toString())
+                    .text();
+        }
+        if (bodyPart.getContent() instanceof MimeMultipart){
+            return getTextFromMimeMultipart((MimeMultipart)bodyPart.getContent());
+        }
+
+        return "";
+    }
+
+
+
 
     @Bean
     public JavaMailSender javaMailSender() {
@@ -124,13 +146,13 @@ public class EmailService {
         javaMailSender.setHost("smtp.office365.com");
         javaMailSender.setPort(587);
         javaMailSender.setUsername("samrat.reddot@outlook.com");
-        javaMailSender.setPassword("Sas1607022!");
+        javaMailSender.setPassword(emailPassword);
 
         Properties properties = javaMailSender.getJavaMailProperties();
         properties.put("mail.transport.protocol", "smtp");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.debug", "true");
+        properties.put("mail.debug", "false");
 
 
         return javaMailSender;
