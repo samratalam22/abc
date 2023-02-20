@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
@@ -26,13 +27,17 @@ public class EmailService {
     public static final String emailPassword = System.getenv("email_password");
 
 
-    public void sendEmail(String to, String subject, String body) throws MessagingException {
+    public void sendEmail(String to, String subject, String body, MultipartFile file) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setFrom("samrat.reddot@outlook.com");
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(body, true);
+        if (!file.isEmpty()) {
+            helper.addAttachment(file.getOriginalFilename(), file);
+        }
+
         javaMailSender.send(message);
     }
 
@@ -99,7 +104,6 @@ public class EmailService {
     }
 
 
-
     private String getTextFromMail(Message message) throws MessagingException, IOException {
         if (message.isMimeType("text/plain")) {
             return message.getContent().toString();
@@ -112,7 +116,7 @@ public class EmailService {
     }
 
     private String getTextFromMimeMultipart(
-            MimeMultipart mimeMultipart)  throws MessagingException, IOException{
+            MimeMultipart mimeMultipart) throws MessagingException, IOException {
         String result = "";
         for (int i = 0; i < mimeMultipart.getCount(); i++) {
             BodyPart bodyPart = mimeMultipart.getBodyPart(i);
@@ -130,14 +134,12 @@ public class EmailService {
                     .parse(bodyPart.getContent().toString())
                     .text();
         }
-        if (bodyPart.getContent() instanceof MimeMultipart){
-            return getTextFromMimeMultipart((MimeMultipart)bodyPart.getContent());
+        if (bodyPart.getContent() instanceof MimeMultipart) {
+            return getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
         }
 
         return "";
     }
-
-
 
 
     @Bean

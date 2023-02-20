@@ -5,6 +5,7 @@ import com.example.demooutlookmail.outllookmail.Model.MailModel;
 import com.example.demooutlookmail.outllookmail.config.EmailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,11 +38,13 @@ public class OutlookMailController {
 
 
     @PostMapping("/send-mail1")
-    public ResponseEntity sendMail1(@RequestBody MailModel mailModel) {
+    public ResponseEntity sendMail1(@RequestPart(value = "file", required = false) MultipartFile file, @RequestPart("mailModel") MailModel mailModel) {
         System.out.println(mailModel.toString());
 
+        System.out.println(file.getContentType());
+
         try {
-            emailService.sendEmail(mailModel.getTo(), mailModel.getSubject(), (String) mailModel.getMailBody());
+            emailService.sendEmail(mailModel.getTo(), mailModel.getSubject(), (String) mailModel.getMailBody(),file);
             return ResponseEntity.ok("Success");
         } catch (
                 Exception e) {
