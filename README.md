@@ -3,6 +3,9 @@
 # Send Mail:
 <img width="647" alt="image" src="https://user-images.githubusercontent.com/38380356/219321956-eb7acdee-0e90-4a77-b491-5d5471f5d4df.png">
 
+<img width="654" alt="image" src="https://user-images.githubusercontent.com/38380356/220138780-8d4fbc0b-3bdf-4f79-8fc7-af865f983928.png">
+
+
 # Result:
 <img width="706" alt="image" src="https://user-images.githubusercontent.com/38380356/219322101-6a22783e-1ea3-4888-9854-7ce073ee0c89.png">
 
